@@ -44,7 +44,6 @@ Create a `.env` file in the root directory:
 GEMINI_API_KEY=your_gemini_api_key_here
 PORT=8000
 ```
-*(Get your free Gemini API key from [Google AI Studio](https://aistudio.google.com/))*
 
 ### 5. Start the Server
 ```bash
