@@ -1,0 +1,22 @@
+# Python Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Secrets and local configurations (DO NOT UPLOAD TO GITHUB)
+.env
+.env.local
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Operating system artifacts
+Thumbs.db
+.DS_Store
+
+# Large media files (optional)
+# description_clippp.mp4
