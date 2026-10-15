@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#4CAF50">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NutriAI - AI Nutrition Coach & Metabolic Food Companion</title>
+  <meta name="description"
+    content="NutriAI is a clinical-grade AI personalized nutrition companion, food image recognition scanner, and metabolic health tracker for Diabetes, PCOS, Hypertension, Thyroid, and Lifestyle wellness.">
+  <link rel="stylesheet" href="styles.css?v=52">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234CAF50'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+</head>
+
+<body>
+
+
+  <!-- Main App Container -->
+  <div class="device-wrapper" id="deviceWrapper">
+
+    <!-- Global SVG Gradients Definition -->
+    <svg width="0" height="0" style="position: absolute;">
+      <defs>
+        <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4CAF50" />
+          <stop offset="100%" stop-color="#2E7D32" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- App Viewport (Scrollable Screen Area) -->
+    <div class="app-viewport" id="appViewport">
+
+      <!-- ===================================================================
+           SCREEN 1: AUTHENTICATION & WELCOME SCREEN
+           =================================================================== -->
+      <section class="app-screen no-nav active" id="screen-welcome">
+        <div class="auth-welcome-container">
+
+          <!-- Ambient Glow -->
+          <div class="welcome-ambient-glow"></div>
+
+          <!-- Brand Header -->
+          <div class="auth-brand-header">
+            <div class="logo-badge-art">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <h1 class="welcome-title">NutriAI</h1>
+            <p class="auth-tagline">AI Nutrition & Metabolic Health Coach</p>
+          </div>
+
+          <!-- RETURNING USER CARD (Small Login & Direct Re-entry) -->
+          <div class="auth-returning-user-card" id="authReturningUserCard" style="display: none;">
+            <div class="returning-user-info">
+              <div class="returning-user-avatar" id="authReturningAvatar">U</div>
+              <div>
+                <div class="returning-user-greeting">Welcome back</div>
+                <div class="returning-user-name" id="authReturningName">User</div>
+              </div>
+            </div>
+            <button type="button" class="btn-primary" id="btnWelcomeContinue">
+              <span>Log In & Continue &rarr;</span>
+            </button>
+            <button type="button" class="btn-auth-switch-link" id="btnAuthSwitchAccount">
+              Switch Account / New User
+            </button>
+          </div>
+
+          <!-- FIRST-TIME SETUP / NEW USER CARD -->
+          <div class="auth-card" id="authMainCard">
+            <div style="text-align: center; margin-bottom: 2px;">
+              <h2 style="font-size: 19px; font-weight: 800; color: #FFFFFF; margin: 0 0 6px 0;" id="authCardTitle">Welcome to NutriAI 👋</h2>
+              <p style="font-size: 13px; color: rgba(255,255,255,0.75); margin: 0; line-height: 1.45;" id="authCardSubtitle">
+                Please enter your name to customize your AI food companion & metabolic health profile.
+              </p>
+            </div>
+
+            <!-- Direct Name Input Form -->
+            <form id="authStartForm" class="auth-form-fields" autocomplete="on">
+              <div class="auth-input-group">
+                <label class="auth-label" for="inputAuthName">Full Name</label>
+                <div class="auth-input-wrapper">
+                  <span class="auth-input-icon">&#128100;</span>
+                  <input type="text" id="inputAuthName" class="auth-input" placeholder="e.g. Alex Parker" required autocomplete="name" />
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary auth-submit-btn" id="btnAuthStartSetup">
+                <span id="authStartSubmitText">Continue & Setup Profile &rarr;</span>
+              </button>
+            </form>
+
+            <button type="button" class="btn-auth-switch-link" id="btnBackToSavedUser" style="display: none; margin-top: 4px;">
+              &larr; Back to saved profile
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 2: SMART USER PROFILE SETUP & METABOLIC CALIBRATION
+           =================================================================== -->
+      <section class="app-screen no-nav" id="screen-profile">
+        <header class="screen-header">
+          <button class="btn-icon" id="btnBackToDashboard" title="Back to Dashboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <h3 class="screen-header-title" id="profileHeaderTitle">My Health Profile</h3>
+          <button type="button" class="btn-profile-edit-toggle" id="btnHeaderEditToggle">
+            <span>✏️ Edit</span>
+          </button>
+        </header>
+
+        <!-- ===================================================================
+             PROFILE VIEW MODE (Clean Unified List: Type on Left, Value on Right)
+             =================================================================== -->
+        <div class="profile-view-content" id="profileViewModeContainer">
+
+          <!-- Clean Profile Avatar & Identity Card -->
+          <div class="glass-card profile-user-header-card">
+            <div class="profile-avatar-clean">
+              <span id="viewUserAvatarInitial">U</span>
+            </div>
+            <div class="profile-user-header-details">
+              <h2 class="profile-user-name" id="viewUserName">User Name</h2>
+              <p class="profile-user-sub" id="viewUserSubBio">Active Health Profile</p>
+            </div>
+            <button type="button" class="btn-profile-edit-badge" id="btnOpenEditProfileTop">
+              <span>✏️ Edit</span>
+            </button>
+          </div>
+
+          <!-- Single Unified Settings / Profile List Card -->
+          <div class="glass-card profile-unified-list-card">
+
+            <div class="profile-list-section-header">
+              <span>👤</span>
+              <span>Personal Details</span>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>📝</span> Full Name</div>
+              <div class="profile-item-val" id="viewValName">User Name</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>⚧</span> Gender</div>
+              <div class="profile-item-val" id="viewValGender">Female</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🎂</span> Date of Birth / Age</div>
+              <div class="profile-item-val" id="viewValAge">28 yrs</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🩸</span> Blood Group</div>
+              <div class="profile-item-val" id="viewValBloodGroup">O+</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🎯</span> Fitness Goal</div>
+              <div class="profile-item-val" id="viewValGoal">Weight Loss (-500 kcal)</div>
+            </div>
+
+            <div class="profile-list-section-header">
+              <span>🥗</span>
+              <span>Diet & Health Protocol</span>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🍽️</span> Diet Preference</div>
+              <div class="profile-item-val" id="viewValDiet">Vegetarian</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🩺</span> Health Focus / Conditions</div>
+              <div class="profile-item-val" id="viewValConditions">General Health</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🚫</span> Allergies</div>
+              <div class="profile-item-val" id="viewValAllergies">None</div>
+            </div>
+
+            <div class="profile-list-section-header">
+              <span>📊</span>
+              <span>Body Measurements & Calorie Targets</span>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>📏</span> Height</div>
+              <div class="profile-item-val" id="viewValHeight">165 cm</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>⚖️</span> Weight</div>
+              <div class="profile-item-val" id="viewValWeight">62.0 kg</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>📈</span> BMI Status</div>
+              <div class="profile-item-val" id="viewValBmi">22.8 (Normal)</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🎯</span> Daily Calorie Target</div>
+              <div class="profile-item-val val-highlight" id="viewValCals">1800 kcal</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🍗</span> Target Protein</div>
+              <div class="profile-item-val" id="viewValProtein">75 g</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🥦</span> Target Fiber</div>
+              <div class="profile-item-val" id="viewValFiber">28 g</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>⚡</span> BMR / TDEE</div>
+              <div class="profile-item-val" id="viewValBmrTdee">1420 / 2200 kcal</div>
+            </div>
+
+            <div class="profile-list-item">
+              <div class="profile-item-type"><span>🏃</span> Activity Level</div>
+              <div class="profile-item-val" id="viewValActivity">Moderate Activity</div>
+            </div>
+
+          </div>
+
+          <!-- Account Actions (Logout & Reset in a Single Line at the Bottom) -->
+          <div class="profile-actions-2grid">
+            <button type="button" class="profile-grid-btn logout-grid-btn" id="btnProfileLogout" title="Log Out Account">
+              <span class="profile-grid-btn-icon">🚪</span>
+              <div class="profile-grid-btn-text">
+                <span class="profile-grid-btn-title">Log Out</span>
+                <span class="profile-grid-btn-sub">End session</span>
+              </div>
+            </button>
+
+            <button type="button" class="profile-grid-btn reset-grid-btn" id="btnResetAppData" title="Reset Health Data">
+              <span class="profile-grid-btn-icon">🗑️</span>
+              <div class="profile-grid-btn-text">
+                <span class="profile-grid-btn-title">Reset Data</span>
+                <span class="profile-grid-btn-sub">Clear all logs</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             PROFILE ONBOARDING & SETUP MULTI-STEP SLIDER WIZARD
+             =================================================================== -->
+        <form class="profile-setup-content" id="onboardingForm" novalidate style="display: none;">
+
+          <!-- TOP STEP SLIDER PROGRESS BOXES -->
+          <div class="onboarding-step-slider-container">
+            <div class="step-slider-track">
+              <div class="step-slider-fill" id="stepSliderFill"></div>
+            </div>
+
+            <div class="step-slider-boxes">
+              <div class="step-box-item active" id="stepBoxPill1" data-step="1">
+                <span class="step-box-num">1</span>
+                <span class="step-box-lbl">Personal</span>
+              </div>
+              <div class="step-box-item" id="stepBoxPill2" data-step="2">
+                <span class="step-box-num">2</span>
+                <span class="step-box-lbl">Lifestyle</span>
+              </div>
+              <div class="step-box-item" id="stepBoxPill3" data-step="3">
+                <span class="step-box-num">3</span>
+                <span class="step-box-lbl">Confirm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 1: PERSONAL & BIOMETRIC DETAILS PAGE -->
+          <div class="onboarding-step-pane active" id="onboardingStepPane1">
+            <div class="glass-card form-step-card">
+              <div class="form-step-header">
+                <div>
+                  <h4 class="form-step-title">👤 Personal Details</h4>
+                  <p class="form-step-sub">Basic biometrics and biological information</p>
+                </div>
+                <span class="form-step-tag">Step 1 of 3</span>
+              </div>
+
+              <!-- Full Name Field -->
+              <div class="input-floating-group">
+                <label class="input-label" for="inputName">Full Name</label>
+                <div class="input-icon-box">
+                  <span class="input-ico">👤</span>
+                  <input type="text" id="inputName" class="input-control clean-input" placeholder="e.g. Sarah Jenkins"
+                    autocomplete="name" />
+                </div>
+              </div>
+
+              <!-- Biological Gender Selection -->
+              <div class="input-floating-group">
+                <label class="input-label">Biological Gender</label>
+                <div class="segment-control" id="genderSegment">
+                  <button type="button" class="segment-btn active" data-gender="female">♀ Female</button>
+                  <button type="button" class="segment-btn" data-gender="male">♂ Male</button>
+                  <button type="button" class="segment-btn" data-gender="other">⚥ Other</button>
+                </div>
+              </div>
+
+              <!-- Date of Birth & Age Row -->
+              <div style="display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 10px;">
+                <div class="input-floating-group">
+                  <label class="input-label" for="inputDob">Date of Birth</label>
+                  <div class="input-icon-box">
+                    <span class="input-ico">📅</span>
+                    <input type="date" id="inputDob" class="input-control clean-input" />
+                  </div>
+                </div>
+                <div class="input-floating-group">
+                  <label class="input-label" for="inputAge">Age (yrs)</label>
+                  <div class="input-icon-box">
+                    <span class="input-ico">🎂</span>
+                    <input type="number" id="inputAge" class="input-control clean-input" placeholder="e.g. 28" min="10"
+                      max="110" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Blood Group & Unit Toggle Row -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="input-floating-group">
+                  <label class="input-label" for="selectBloodGroup">Blood Group</label>
+                  <div class="input-icon-box">
+                    <span class="input-ico">🩸</span>
+                    <select id="selectBloodGroup" class="input-control clean-input" style="cursor: pointer;">
+                      <option value="O+">O+ (Positive)</option>
+                      <option value="O-">O- (Negative)</option>
+                      <option value="A+">A+ (Positive)</option>
+                      <option value="A-">A- (Negative)</option>
+                      <option value="B+">B+ (Positive)</option>
+                      <option value="B-">B- (Negative)</option>
+                      <option value="AB+">AB+ (Positive)</option>
+                      <option value="AB-">AB- (Negative)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="input-floating-group">
+                  <label class="input-label">Unit System</label>
+                  <div style="display: flex; gap: 4px; height: 44px; align-items: center;">
+                    <button type="button" class="badge badge-green" id="unitMetricBtn"
+                      style="flex: 1; height: 100%; justify-content: center; font-size: 11px;">Metric (cm/kg)</button>
+                    <button type="button" class="badge" id="unitImperialBtn"
+                      style="flex: 1; height: 100%; justify-content: center; font-size: 11px; background: var(--bg-input); color: var(--text-muted);">Imperial
+                      (ft/lbs)</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Height & Weight Row -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="input-floating-group" id="groupHeightMetric">
+                  <label class="input-label" for="inputHeightCm">Height (cm)</label>
+                  <div class="input-icon-box">
+                    <span class="input-ico">📏</span>
+                    <input type="number" id="inputHeightCm" class="input-control clean-input" placeholder="e.g. 165" />
+                  </div>
+                </div>
+
+                <div class="input-floating-group" id="groupHeightImperial" style="display: none;">
+                  <label class="input-label">Height (ft & in)</label>
+                  <div style="display: flex; gap: 4px;">
+                    <input type="number" id="inputHeightFt" class="input-control clean-input" placeholder="5 ft" />
+                    <input type="number" id="inputHeightIn" class="input-control clean-input" placeholder="6 in" />
+                  </div>
+                </div>
+
+                <div class="input-floating-group">
+                  <label class="input-label" for="inputWeight">Weight (<span id="weightUnitText">kg</span>)</label>
+                  <div class="input-icon-box">
+                    <span class="input-ico">⚖️</span>
+                    <input type="number" id="inputWeight" class="input-control clean-input" placeholder="e.g. 62.0"
+                      step="0.1" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 1 Next Button -->
+              <button type="button" class="btn-primary" id="btnStep1Next" style="margin-top: 14px;">
+                <span>Next: Nutrition & Lifestyle &rarr;</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 2: NUTRITION, LIFESTYLE & GOALS PAGE -->
+          <div class="onboarding-step-pane" id="onboardingStepPane2" style="display: none;">
+            <div class="glass-card form-step-card">
+              <div class="form-step-header">
+                <div>
+                  <h4 class="form-step-title">🥗 Nutrition & Lifestyle</h4>
+                  <p class="form-step-sub">Diet preference, health focus and activity</p>
+                </div>
+                <span class="form-step-tag">Step 2 of 3</span>
+              </div>
+
+              <!-- Food Preference (Diet Type) -->
+              <div class="input-floating-group">
+                <label class="input-label">Food Preference</label>
+                <div class="preference-grid-3" id="dietPreferenceGrid">
+                  <div class="preference-card selected" data-diet="vegetarian">
+                    <div class="preference-icon">🥦</div>
+                    <div class="preference-label">Vegetarian</div>
+                  </div>
+                  <div class="preference-card" data-diet="non-veg">
+                    <div class="preference-icon">🍗</div>
+                    <div class="preference-label">Non-Veg</div>
+                  </div>
+                  <div class="preference-card" data-diet="vegan">
+                    <div class="preference-icon">🌱</div>
+                    <div class="preference-label">Vegan</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Health Conditions / Focus -->
+              <div class="input-floating-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                  <label class="input-label" style="margin-bottom: 0;">Health Focus / Conditions</label>
+                  <span class="badge badge-green" style="font-size: 9.5px;">Multi-select</span>
+                </div>
+                <div class="condition-pill-grid" id="conditionOptionsGrid">
+                  <div class="condition-chip" data-condition="diabetes"><span>🩸</span><span>Diabetes Care</span></div>
+                  <div class="condition-chip pcod" data-condition="pcod"><span>🌸</span><span>PCOS / PCOD</span></div>
+                  <div class="condition-chip bp" data-condition="hypertension"><span>🩺</span><span>High BP /
+                      DASH</span></div>
+                  <div class="condition-chip" data-condition="thyroid"><span>🦋</span><span>Thyroid Support</span></div>
+                  <div class="condition-chip" data-condition="fatty_liver"><span>🫀</span><span>Fatty Liver</span></div>
+                  <div class="condition-chip" data-condition="general"><span>🥗</span><span>General Health</span></div>
+                </div>
+              </div>
+
+              <!-- Daily Activity Level -->
+              <div class="input-floating-group">
+                <label class="input-label" for="selectActivity">Daily Activity Level</label>
+                <select id="selectActivity" class="input-control clean-input" style="cursor: pointer;">
+                  <option value="1.2">Sedentary (desk job, minimal exercise)</option>
+                  <option value="1.375">Light Active (1-3 days light exercise/walks)</option>
+                  <option value="1.55" selected>Moderate Active (3-5 days workout/sports)</option>
+                  <option value="1.725">Very Active (6-7 days intense training)</option>
+                  <option value="1.9">Extra Active (heavy physical labour/athlete)</option>
+                </select>
+              </div>
+
+              <!-- Fitness Goal -->
+              <div class="input-floating-group">
+                <label class="input-label">Fitness Goal</label>
+                <div class="goal-card-grid" id="goalOptionsGrid">
+                  <div class="goal-card selected" data-goal="loss">
+                    <div class="goal-icon">📉</div>
+                    <div class="goal-label">Weight Loss</div>
+                    <div class="goal-sub">-500 kcal</div>
+                  </div>
+                  <div class="goal-card" data-goal="maintain">
+                    <div class="goal-icon">⚖️</div>
+                    <div class="goal-label">Maintain</div>
+                    <div class="goal-sub">TDEE</div>
+                  </div>
+                  <div class="goal-card" data-goal="gain">
+                    <div class="goal-icon">📈</div>
+                    <div class="goal-label">Muscle Gain</div>
+                    <div class="goal-sub">+350 kcal</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Allergies -->
+              <div class="input-floating-group">
+                <label class="input-label">Food Allergies / Intolerances</label>
+                <div class="condition-pill-grid" id="allergiesGrid">
+                  <div class="condition-chip" data-allergy="gluten"><span>🌾</span><span>Gluten-Free</span></div>
+                  <div class="condition-chip" data-allergy="dairy"><span>🥛</span><span>Dairy-Free</span></div>
+                  <div class="condition-chip" data-allergy="nuts"><span>🥜</span><span>Nut Allergy</span></div>
+                  <div class="condition-chip" data-allergy="soy"><span>🫘</span><span>Soy-Free</span></div>
+                </div>
+              </div>
+
+              <!-- Live Metabolic Calculation Summary Preview -->
+              <div class="targets-summary-box" id="liveTargetsSummaryBox">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 12px; font-weight: 800; color: var(--primary);">⚡ AI Metabolic Engine</span>
+                  <span class="badge badge-green" id="profileBmrTdeeBadge">BMR: 1,420 | TDEE: 2,200</span>
+                </div>
+                <div class="targets-stat-grid">
+                  <div class="target-stat-item">
+                    <div class="lbl">Target Calories</div>
+                    <div class="val" id="profileTargetCals" style="color: var(--primary);">1,700 kcal</div>
+                  </div>
+                  <div class="target-stat-item">
+                    <div class="lbl">Protein Target</div>
+                    <div class="val" id="profileTargetProtein" style="color: #FF9800;">128 g</div>
+                  </div>
+                  <div class="target-stat-item">
+                    <div class="lbl">Fiber Target</div>
+                    <div class="val" id="profileTargetFiber" style="color: #0288D1;">30 g</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2 Navigation Row -->
+              <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px; margin-top: 14px;">
+                <button type="button" class="btn-secondary" id="btnStep2Back">
+                  <span>&larr; Back</span>
+                </button>
+                <button type="button" class="btn-primary" id="btnStep2Next">
+                  <span>Review & Confirm &rarr;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: REVIEW & FINAL CONFIRMATION PAGE -->
+          <div class="onboarding-step-pane" id="onboardingStepPane3" style="display: none;">
+            <div class="glass-card form-step-card">
+              <div class="form-step-header">
+                <div>
+                  <h4 class="form-step-title">✨ Review & Confirm</h4>
+                  <p class="form-step-sub">Verify your personalized profile calibration</p>
+                </div>
+                <span class="form-step-tag">Step 3 of 3</span>
+              </div>
+
+              <div class="confirm-summary-container">
+                <!-- Identity Summary Row -->
+                <div class="confirm-user-badge">
+                  <div class="confirm-avatar" id="confirmSummaryAvatar">S</div>
+                  <div>
+                    <div class="confirm-user-name" id="confirmSummaryName">Sarah Jenkins</div>
+                    <div class="confirm-user-meta" id="confirmSummaryMeta">Female • 28 yrs • Blood: O+</div>
+                  </div>
+                </div>
+
+                <!-- Biometrics & Diet Grid -->
+                <div class="confirm-stats-grid">
+                  <div class="confirm-stat-box">
+                    <span class="cstat-lbl">Height / Weight</span>
+                    <strong class="cstat-val" id="confirmSummaryHeightWeight">165 cm / 62.0 kg</strong>
+                  </div>
+                  <div class="confirm-stat-box">
+                    <span class="cstat-lbl">BMI Status</span>
+                    <strong class="cstat-val" id="confirmSummaryBmi">22.8 (Normal)</strong>
+                  </div>
+                  <div class="confirm-stat-box">
+                    <span class="cstat-lbl">Diet & Goal</span>
+                    <strong class="cstat-val" id="confirmSummaryDietGoal">Vegetarian • Weight Loss</strong>
+                  </div>
+                  <div class="confirm-stat-box">
+                    <span class="cstat-lbl">Health Protocol</span>
+                    <strong class="cstat-val" id="confirmSummaryProtocol">General Health</strong>
+                  </div>
+                </div>
+
+                <!-- Calibrated Calorie Target Card -->
+                <div class="confirm-target-banner">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <span class="ctarget-label">Calibrated Daily Target</span>
+                      <div class="ctarget-cals" id="confirmSummaryCals">1,700 kcal / day</div>
+                    </div>
+                    <span class="badge badge-green">⚡ AI Calibrated</span>
+                  </div>
+                  <div class="confirm-macros-row" id="confirmSummaryMacros">
+                    <span>🥩 128g Protein</span> • <span>🌾 170g Carbs</span> • <span>🥑 57g Fat</span> • <span>🥗 30g
+                      Fiber</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Final Confirm CTA Button -->
+              <button type="button" class="btn-primary btn-confirm-profile" id="btnSaveProfileChanges"
+                style="margin-top: 14px;">
+                <span>✅ Confirm & Save Profile &rarr;</span>
+              </button>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                <button type="button" class="btn-secondary" id="btnStep3Back">
+                  <span>&larr; Back to Edit</span>
+                </button>
+                <button type="button" class="btn-secondary" id="btnDiscardProfileEdit" style="color: var(--danger);">
+                  <span>✕ Discard</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 3: SMART HOME DASHBOARD
+           =================================================================== -->
+      <section class="app-screen" id="screen-dashboard">
+        <div class="dashboard-content">
+
+          <!-- User Greeting & Date Bar -->
+          <div class="dash-top-bar">
+            <div class="user-welcome-text">
+              <p id="dashTodayDate">Today</p>
+              <h2>Hello, <span id="dashUserName">User</span> 👋</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button class="btn-icon" id="btnDashThemeToggle" title="Toggle Dark / Light Mode">
+                <svg id="dashThemeIconSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="dashThemeIconMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" style="display: none;">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+              </button>
+              <button class="btn-icon" id="btnDashLogout" title="Log Out Session" style="color: #EF5350;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+              </button>
+              <button class="dash-profile-dp-btn" id="btnDashProfileSettings" title="View & Edit User Profile">
+                <div class="dash-avatar-circle">
+                  <span id="dashUserAvatarInitial">U</span>
+                  <div class="dash-avatar-status-dot" title="Active Health Profile"></div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Care Protocol Banner -->
+          <div class="clinical-protocol-banner" id="clinicalProtocolBanner">
+            <div>
+              <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase;">Active
+                Care Protocol</span>
+              <div class="protocol-badge-list" id="protocolBadgeList" style="margin-top: 4px;">
+                <span class="protocol-mini-pill">Personalized Health Care</span>
+              </div>
+            </div>
+            <button class="badge badge-green" id="btnQuickVitalsLog" style="cursor: pointer; padding: 6px 10px;">🩺 Log
+              Vitals</button>
+          </div>
+
+          <!-- Circular Calorie Gauge Card -->
+          <div class="calorie-gauge-card">
+            <div class="calorie-gauge-wrapper">
+              <div class="calorie-gauge-circle-container">
+                <svg viewBox="0 0 100 100" class="calorie-svg-gauge">
+                  <circle cx="50" cy="50" r="42" class="gauge-bg-circle"></circle>
+                  <circle cx="50" cy="50" r="42" class="gauge-progress-circle" id="calorieGaugeFill"
+                    stroke-dasharray="263.89" stroke-dashoffset="263.89"></circle>
+                </svg>
+                <div class="calorie-gauge-inner-text">
+                  <div class="calorie-gauge-remaining-val" id="dashRemainingCalories">--</div>
+                  <div class="calorie-gauge-remaining-lbl">Remaining</div>
+                </div>
+              </div>
+
+              <div class="calorie-breakdown-stats">
+                <div class="calorie-stat-pill">
+                  <span class="calorie-stat-pill-label">🎯 Target</span>
+                  <span class="calorie-stat-pill-val" id="dashTargetCalories">-- kcal</span>
+                </div>
+                <div class="calorie-stat-pill">
+                  <span class="calorie-stat-pill-label">🍽️ Eaten</span>
+                  <span class="calorie-stat-pill-val" id="dashConsumedCalories">0 kcal</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4-Grid Macronutrient & Fiber Bars -->
+            <div class="macros-grid-4">
+              <div class="macro-box-item">
+                <div class="macro-box-title protein">Protein</div>
+                <div class="macro-box-grams" id="dashProteinGrams">0g</div>
+                <div class="macro-box-target" id="dashProteinTarget">/ 0g</div>
+                <div class="macro-mini-bar-track">
+                  <div class="macro-mini-bar-fill protein" id="dashProteinBar" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div class="macro-box-item">
+                <div class="macro-box-title carbs">Carbs</div>
+                <div class="macro-box-grams" id="dashCarbsGrams">0g</div>
+                <div class="macro-box-target" id="dashCarbsTarget">/ 0g</div>
+                <div class="macro-mini-bar-track">
+                  <div class="macro-mini-bar-fill carbs" id="dashCarbsBar" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div class="macro-box-item">
+                <div class="macro-box-title fat">Fat</div>
+                <div class="macro-box-grams" id="dashFatGrams">0g</div>
+                <div class="macro-box-target" id="dashFatTarget">/ 0g</div>
+                <div class="macro-mini-bar-track">
+                  <div class="macro-mini-bar-fill fat" id="dashFatBar" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div class="macro-box-item">
+                <div class="macro-box-title fiber">Fiber</div>
+                <div class="macro-box-grams" id="dashFiberGrams">0g</div>
+                <div class="macro-box-target" id="dashFiberTarget">/ 0g</div>
+                <div class="macro-mini-bar-track">
+                  <div class="macro-mini-bar-fill fiber" id="dashFiberBar" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Quick Action Speed Row -->
+          <div class="ai-quick-actions-bar">
+            <div class="ai-action-btn-tile" id="dashBtnDietPlan">
+              <div class="ai-action-tile-icon" style="background: rgba(76, 175, 80, 0.15); color: #4CAF50;">🥗</div>
+              <div class="ai-action-tile-label">AI Diet Plan</div>
+            </div>
+            <div class="ai-action-btn-tile" id="dashBtnScanFood">
+              <div class="ai-action-tile-icon" style="background: rgba(2, 136, 209, 0.15); color: #0288D1;">📷</div>
+              <div class="ai-action-tile-label">AI Scanner</div>
+            </div>
+            <div class="ai-action-btn-tile" id="dashBtnAICoach">
+              <div class="ai-action-tile-icon" style="background: rgba(171, 71, 188, 0.15); color: #AB47BC;">🤖</div>
+              <div class="ai-action-tile-label">AI Coach</div>
+            </div>
+            <div class="ai-action-btn-tile" id="dashBtnManualAdd">
+              <div class="ai-action-tile-icon" style="background: rgba(255, 152, 0, 0.15); color: #FF9800;">➕</div>
+              <div class="ai-action-tile-label">Log Food</div>
+            </div>
+          </div>
+
+          <!-- Water Intake Widget -->
+          <div class="water-widget-card">
+            <div class="water-header-row">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 16px;">💧</span>
+                <span style="font-size: 13px; font-weight: 800; color: var(--text-main);">Hydration Tracker</span>
+              </div>
+              <span class="badge" style="background: var(--info-light); color: var(--info);" id="dashWaterCount">0 / 12
+                Glasses (3.0L)</span>
+            </div>
+            <div class="water-glasses-row" id="waterGlassesGrid">
+              <!-- Rendered dynamically -->
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 11px; color: var(--text-muted);">Optimal for metabolic rate & liver flush</span>
+              <div class="water-btn-controls">
+                <button type="button" class="water-round-btn" id="btnWaterMinus">−</button>
+                <button type="button" class="water-round-btn" id="btnWaterPlus">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meal Log Slots -->
+          <div class="meals-section-wrapper">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-family: var(--font-display); font-size: 16px; font-weight: 800;">Today's Meals</h3>
+              <button class="badge badge-green" id="btnOpenManualFoodModal">+ Add Item</button>
+            </div>
+
+            <!-- Breakfast Slot -->
+            <div class="meal-slot-card" id="slotBreakfast">
+              <div class="meal-slot-header">
+                <div class="meal-slot-title-left">
+                  <span>🌅</span>
+                  <h4>Breakfast</h4>
+                </div>
+                <div class="meal-slot-cals" id="slotCalsBreakfast">0 kcal</div>
+              </div>
+              <div class="meal-items-list" id="listBreakfast">
+                <p class="empty-slot-text">No breakfast logged yet</p>
+              </div>
+            </div>
+
+            <!-- Lunch Slot -->
+            <div class="meal-slot-card" id="slotLunch">
+              <div class="meal-slot-header">
+                <div class="meal-slot-title-left">
+                  <span>🥗</span>
+                  <h4>Lunch</h4>
+                </div>
+                <div class="meal-slot-cals" id="slotCalsLunch">0 kcal</div>
+              </div>
+              <div class="meal-items-list" id="listLunch">
+                <p class="empty-slot-text">No lunch logged yet</p>
+              </div>
+            </div>
+
+            <!-- Dinner Slot -->
+            <div class="meal-slot-card" id="slotDinner">
+              <div class="meal-slot-header">
+                <div class="meal-slot-title-left">
+                  <span>🌙</span>
+                  <h4>Dinner</h4>
+                </div>
+                <div class="meal-slot-cals" id="slotCalsDinner">0 kcal</div>
+              </div>
+              <div class="meal-items-list" id="listDinner">
+                <p class="empty-slot-text">No dinner logged yet</p>
+              </div>
+            </div>
+
+            <!-- Snacks Slot -->
+            <div class="meal-slot-card" id="slotSnacks">
+              <div class="meal-slot-header">
+                <div class="meal-slot-title-left">
+                  <span>🥑</span>
+                  <h4>Snacks & Infusions</h4>
+                </div>
+                <div class="meal-slot-cals" id="slotCalsSnacks">0 kcal</div>
+              </div>
+              <div class="meal-items-list" id="listSnacks">
+                <p class="empty-slot-text">No snacks logged yet</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 4: AI PERSONALIZED DIET RECOMMENDATIONS
+           =================================================================== -->
+      <section class="app-screen" id="screen-diet-plan">
+        <header class="screen-header">
+          <button class="btn-icon" id="btnBackFromDiet" title="Back to Home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <h3 class="screen-header-title">Recommended Meal Plan</h3>
+          <button class="btn-icon" id="btnRegeneratePlan" title="Regenerate Plan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="diet-plan-scroll-content">
+          <!-- Clean Protocol Overview Card -->
+          <div class="diet-plan-overview-card">
+            <div class="diet-overview-top">
+              <div class="diet-overview-left">
+                <span class="diet-protocol-pill" id="dietPlanProtocolTag">Personalized Plan</span>
+                <h3 class="diet-overview-title">Today's Meal Routine</h3>
+              </div>
+              <div class="diet-plan-cal-badge">
+                <span class="diet-plan-cal-number" id="dietPlanTotalCals">-- kcal</span>
+                <span class="diet-plan-cal-label">Total Plan</span>
+              </div>
+            </div>
+
+            <div class="diet-overview-chips-row">
+              <span class="diet-chip-item" id="dietTagTarget">🎯 Target: 1,800 kcal</span>
+              <span class="diet-chip-item" id="dietTagDiet">🥗 Vegetarian</span>
+              <span class="diet-chip-item" id="dietTagGoal">⚖️ Weight Loss</span>
+            </div>
+          </div>
+
+          <!-- Dynamic 4 Meal Recommendation Cards Container -->
+          <div id="aiDietRecommendationsContainer" class="diet-cards-grid">
+            <!-- Rendered by app.js -->
+          </div>
+
+          <!-- One-Tap Bulk Log Action -->
+          <button type="button" class="btn-secondary" id="btnLogEntireDietPlan"
+            style="margin-top: 4px; padding: 12px; font-weight: 700;">
+            <span>📋 Add All 4 Meals to Today's Tracker</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 5: AI FOOD IMAGE SCANNER & RECOGNITION
+           =================================================================== -->
+      <section class="app-screen" id="screen-scanner">
+        <header class="screen-header">
+          <button class="btn-icon" id="btnBackFromScanner" title="Back to Home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <h3 class="screen-header-title">AI Food Recognition Scanner</h3>
+          <button class="btn-icon" id="btnOpenVisionSettingsModal" title="AI Vision Model Settings"
+            style="width: 36px; height: 36px; font-size: 16px;">✨</button>
+        </header>
+
+        <div class="scanner-container-view">
+
+          <!-- Viewfinder / Camera Frame -->
+          <div class="scanner-viewport-box" id="scannerViewport" title="Tap to open camera">
+            <!-- Video Camera Stream (if supported) -->
+            <video id="cameraStream" class="camera-stream-video" autoplay playsinline style="display: none;"></video>
+            
+            <!-- Real Preview / Captured Photo (Smoothly displayed during scanning) -->
+            <img id="scannerUploadedImage" class="scanner-preview-image" style="display: none;" alt="Uploaded Food" />
+
+            <!-- Standby Viewfinder Prompt (Visible before photo is taken) -->
+            <div class="scanner-standby-placeholder" id="scannerStandbyPrompt">
+              <div class="standby-camera-icon-circle">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+              </div>
+              <h4 class="standby-headline">Ready to Scan Food</h4>
+              <p class="standby-subline">Point camera at food or upload an image to analyze calories &amp; nutrients</p>
+            </div>
+
+            <!-- Scanner Neural Overlay placeholder (preserved for DOM reference) -->
+            <div class="scanner-neural-overlay" id="scannerOverlay" style="display: none;"></div>
+
+            <!-- Centered Translucent Circular Progress Loading Indicator -->
+            <div class="scanner-analyzing-hud" id="scannerAnalyzingPill" style="display: none;">
+              <div class="scanner-circular-loader">
+                <div class="circular-spinner-wrap">
+                  <!-- SVG Circular Progress & Rotating Ring -->
+                  <svg class="circular-spinner-svg" viewBox="0 0 120 120">
+                    <defs>
+                      <linearGradient id="scannerSpinnerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#00E676" />
+                        <stop offset="50%" stop-color="#00B0FF" />
+                        <stop offset="100%" stop-color="#69F0AE" />
+                      </linearGradient>
+                    </defs>
+                    <!-- Background Track Circle -->
+                    <circle class="spinner-track" cx="60" cy="60" r="48"></circle>
+                    <!-- Dynamic Progress Circle (0% to 100%) -->
+                    <circle class="spinner-progress" id="scannerCircleProgress" cx="60" cy="60" r="48"></circle>
+                    <!-- Rotating Outer Glow Ring -->
+                    <circle class="spinner-rotating-ring" cx="60" cy="60" r="54"></circle>
+                  </svg>
+                  
+                  <!-- Central HUD info: percentage & processing state -->
+                  <div class="circular-spinner-inner">
+                    <span class="spinner-percentage" id="scannerHudPercent">0%</span>
+                    <span class="spinner-subtext" id="scannerHudStatusSub">Processing...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden Native File Inputs -->
+          <!-- 1. Direct Mobile Camera Input (Launches native phone camera) -->
+          <input type="file" id="cameraCaptureInput" accept="image/*" capture="environment" style="display: none;">
+          <!-- 2. Gallery / File Upload Input -->
+          <input type="file" id="fileImageInput" accept="image/*" style="display: none;">
+
+          <!-- Primary Structured Action Controls -->
+          <div class="scanner-actions-grid" id="scannerActionsRow">
+            <button type="button" class="btn-primary btn-scanner-capture" id="btnCapturePhoto">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>Take Photo</span>
+            </button>
+            <button type="button" class="btn-secondary btn-scanner-upload" id="btnTriggerUpload">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <span>Upload Image</span>
+            </button>
+          </div>
+
+          <!-- Retake Option (Visible after image loaded) -->
+          <div class="scanner-retake-row" id="scannerRetakeRow" style="display: none;">
+            <button type="button" class="btn-secondary btn-retake-photo" id="btnRetakePhoto">
+              <span>🔄 Retake / Scan Another Photo</span>
+            </button>
+          </div>
+
+          <!-- Non-Food Warning Result Card -->
+          <div class="glass-card non-food-warning-card" id="scanNonFoodResultCard"
+            style="display: none; text-align: center; padding: 22px 18px;">
+            <div class="non-food-icon-circle">
+              ⚠️
+            </div>
+
+            <div class="non-food-confidence-badge" id="nonFoodConfidenceBadge">
+              No food detected &bull; 96% Confidence
+            </div>
+
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin: 8px 0 6px;">
+              No food detected
+            </h3>
+
+            <p
+              style="font-size: 13px; color: var(--text-muted); line-height: 1.5; max-width: 330px; margin: 0 auto 14px; font-weight: 500;">
+              Please upload a clear image of a food item.
+            </p>
+
+            <!-- Tips for Better Image -->
+            <div class="image-tips-card">
+              <div class="image-tips-title">💡 Tips for better image:</div>
+              <div class="image-tips-list">
+                <div class="tip-item"><span class="tip-check">✓</span> Keep food clearly visible</div>
+                <div class="tip-item"><span class="tip-check">✓</span> Avoid blurry images</div>
+                <div class="tip-item"><span class="tip-check">✓</span> Capture the full plate</div>
+                <div class="tip-item"><span class="tip-check">✓</span> Use good lighting</div>
+              </div>
+            </div>
+
+            <!-- Retry Action Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px;">
+              <button type="button" class="btn-secondary" id="btnNonFoodUploadAnother"
+                style="border-color: var(--primary); color: var(--primary);">
+                <span>📁 Upload Another Image</span>
+              </button>
+              <button type="button" class="btn-primary" id="btnNonFoodCapturePhoto">
+                <span>📸 Capture Food Photo</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ===================================================================
+               STANDARDIZED & QUICK-READING AI DETECTION RESULTS CARD
+               =================================================================== -->
+          <div class="glass-card scan-result-master-card" id="scanResultCard" style="display: none;">
+            
+            <!-- Uncertainty / OCR Alert Banners -->
+            <div id="scanUncertainBanner"
+              style="display: none; margin-bottom: 12px; background: rgba(255, 152, 0, 0.12); border: 1px solid rgba(255, 152, 0, 0.4); border-radius: 10px; padding: 8px 12px; font-size: 11px; color: #E65100;">
+              ⚠️ <strong>Identification Uncertain:</strong> AI prediction confidence is moderate. Please confirm or correct the detected food item.
+            </div>
+
+            <div id="scanOcrLabelBanner"
+              style="display: none; margin-bottom: 10px; background: rgba(33, 150, 243, 0.1); border: 1px solid rgba(33, 150, 243, 0.3); border-radius: 10px; padding: 6px 10px; font-size: 11px; color: #0288D1; display: flex; align-items: center; gap: 6px;">
+              🏷️ <span><strong>Nutrition Label Detected:</strong> Extracted from packaging panel.</span>
+            </div>
+
+            <!-- 1. FOOD IDENTITY HEADER -->
+            <div class="scan-result-header-card">
+              <div class="scan-header-left">
+                <div class="scan-badges-row">
+                  <span class="badge badge-green" id="scanDetectedCategory">Meal</span>
+                  <span class="scan-cuisine-pill" id="scanCuisineTag">Universal</span>
+                  <span class="scan-ai-badge">✨ Gemini AI Verified</span>
+                </div>
+                <h2 class="scan-food-main-title" id="scanFoodTitle">Detected Food Name</h2>
+              </div>
+              <div class="scan-header-right">
+                <div class="spike-risk-pill spike-low" id="scanSpikeRiskBadge">🟢 Low Spike</div>
+              </div>
+            </div>
+
+            <!-- Multi-Item Plate Breakdown -->
+            <div id="scanMultiItemContainer" class="scan-multi-item-box" style="display: none;">
+              <div class="scan-multi-title">🍽️ Detected Plate Items (Multi-Item Recognition)</div>
+              <div id="scanMultiItemList" class="scan-multi-list"></div>
+            </div>
+
+            <!-- 2. HERO CALORIE & PORTION BANNER -->
+            <div class="scan-hero-calorie-card">
+              <div class="hero-calorie-left">
+                <div class="hero-cal-label">Estimated Total Energy</div>
+                <div class="hero-cal-value-row">
+                  <span class="hero-cal-number" id="scanTotalCals">450</span>
+                  <span class="hero-cal-unit">kcal</span>
+                </div>
+              </div>
+              <div class="hero-calorie-right">
+                <div class="hero-portion-badge">
+                  <span class="portion-icon">⚖️</span>
+                  <span id="scanPortionSize">1 Serving (~300g)</span>
+                </div>
+                <div class="confidence-mini-display">
+                  <span>AI Confidence:</span>
+                  <strong id="scanConfidenceScore">96%</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Portion Scaler Controls (Quick 0.5x, 1x, 1.5x, 2x) -->
+            <div class="portion-quick-scaler-box">
+              <div class="portion-scaler-lbl">Adjust Portion Scale:</div>
+              <div class="portion-scaler-grid">
+                <button type="button" class="portion-scale-btn" data-scale="0.5">0.5x (Small)</button>
+                <button type="button" class="portion-scale-btn active" data-scale="1.0">1.0x (Standard)</button>
+                <button type="button" class="portion-scale-btn" data-scale="1.5">1.5x (Large)</button>
+                <button type="button" class="portion-scale-btn" data-scale="2.0">2.0x (Double)</button>
+              </div>
+            </div>
+
+            <!-- 3. QUICK-READING 4 CORE MACRONUTRIENTS DASHBOARD -->
+            <div class="scan-section-heading">⚡ Core Macronutrients</div>
+            <div class="scan-macros-4-grid">
+              <div class="scan-macro-box protein-box">
+                <div class="macro-head">
+                  <span class="macro-emoji">🍗</span>
+                  <span class="macro-name">Protein</span>
+                </div>
+                <div class="macro-amount" id="scanProteinVal">28.0g</div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill protein-bar" style="width: 75%;"></div>
+                </div>
+              </div>
+
+              <div class="scan-macro-box carbs-box">
+                <div class="macro-head">
+                  <span class="macro-emoji">🍚</span>
+                  <span class="macro-name">Carbs</span>
+                </div>
+                <div class="macro-amount" id="scanCarbsVal">75.0g</div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill carbs-bar" style="width: 60%;"></div>
+                </div>
+              </div>
+
+              <div class="scan-macro-box fat-box">
+                <div class="macro-head">
+                  <span class="macro-emoji">🥑</span>
+                  <span class="macro-name">Total Fat</span>
+                </div>
+                <div class="macro-amount" id="scanFatVal">18.0g</div>
+                <div class="macro-sub-note">Sat Fat: <span id="scanSatFatVal">4.5g</span></div>
+              </div>
+
+              <div class="scan-macro-box fiber-box">
+                <div class="macro-head">
+                  <span class="macro-emoji">🥦</span>
+                  <span class="macro-name">Fiber</span>
+                </div>
+                <div class="macro-amount" id="scanFiberVal">6.5g</div>
+                <div class="macro-sub-note">Gut Healthy</div>
+              </div>
+            </div>
+
+            <!-- 4. KEY NUTRITION & METABOLIC INDEX TABLE -->
+            <div class="scan-section-heading">📊 Metabolic Facts & Micronutrients</div>
+            <div class="scan-metabolic-matrix-grid">
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Sugar</span>
+                <span class="meta-stat-val" id="scanSugarVal">3.5g</span>
+              </div>
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Sodium</span>
+                <span class="meta-stat-val" id="scanSodiumVal">380mg</span>
+              </div>
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Glycemic Index</span>
+                <span class="meta-stat-val val-highlight" id="scanGIVal">48</span>
+              </div>
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Cholesterol</span>
+                <span class="meta-stat-val" id="scanCholesterolVal">25mg</span>
+              </div>
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Calcium</span>
+                <span class="meta-stat-val" id="scanCalciumVal">65mg</span>
+              </div>
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Iron</span>
+                <span class="meta-stat-val" id="scanIronVal">2.1mg</span>
+              </div>
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Potassium</span>
+                <span class="meta-stat-val" id="scanPotassiumVal">320mg</span>
+              </div>
+              <div class="meta-stat-cell">
+                <span class="meta-stat-lbl">Vitamins</span>
+                <span class="meta-stat-val" id="scanVitaminsVal" style="font-size: 11px;">Vit A, C, B-Complex</span>
+              </div>
+            </div>
+
+            <!-- 5. DAILY TARGET IMPACT COMPARISON -->
+            <div class="daily-target-comparison-card" id="scanTargetComparisonCard">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase;">
+                  🎯 Impact on Daily Budget
+                </span>
+                <span class="badge badge-green" id="scanTargetStatusBadge">Within Target</span>
+              </div>
+              <div class="target-compare-4-grid">
+                <div class="compare-cell">
+                  <div class="compare-cell-lbl">Daily Target</div>
+                  <div class="compare-cell-val" id="scanCompareTargetCals">1800 kcal</div>
+                </div>
+                <div class="compare-cell">
+                  <div class="compare-cell-lbl">Consumed</div>
+                  <div class="compare-cell-val" id="scanCompareConsumedCals" style="color: #FF9800;">950 kcal</div>
+                </div>
+                <div class="compare-cell highlight">
+                  <div class="compare-cell-lbl">This Meal</div>
+                  <div class="compare-cell-val" id="scanCompareThisMealCals" style="color: var(--primary);">+450 kcal</div>
+                </div>
+                <div class="compare-cell">
+                  <div class="compare-cell-lbl">Remaining</div>
+                  <div class="compare-cell-val" id="scanCompareRemainingCals" style="color: #0288D1;">400 kcal</div>
+                </div>
+              </div>
+              <div style="font-size: 10.5px; color: var(--text-muted); margin-top: 6px;" id="scanTargetUserContextNote">
+                Calibrated for your profile & active health goals.
+              </div>
+            </div>
+
+            <!-- 6. AI FOOD EXPLANATION & INGREDIENTS -->
+            <div class="ai-food-explanation-box">
+              <div>
+                <div class="explanation-section-title">🌿 Main Ingredients Identified</div>
+                <div class="ingredient-pill-cloud" id="scanIngredientsList">
+                  <span class="ingredient-chip">Basmati Rice</span>
+                  <span class="ingredient-chip">Chicken Breast</span>
+                  <span class="ingredient-chip">Yogurt</span>
+                  <span class="ingredient-chip">Spices</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="explanation-section-title">🍳 Culinary Method</div>
+                <div class="cooking-method-banner" id="scanCookingMethod">
+                  Dum-sealed steam cooking with aromatic spices.
+                </div>
+              </div>
+
+              <div class="benefit-concern-row">
+                <div class="health-benefit-box">
+                  <strong style="color: #2E7D32;">✨ Health Benefits:</strong>
+                  <div id="scanBenefitsText" style="margin-top: 3px;">High bioavailable lean protein and thermogenic spices.</div>
+                </div>
+                <div class="health-concern-box">
+                  <strong style="color: #E65100;">⚠️ Health Considerations:</strong>
+                  <div id="scanConcernsText" style="margin-top: 3px;">Moderate carbohydrate load; monitor portion size.</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="explanation-section-title">🎯 Goal Suitability Matrix</div>
+                <div class="goal-suitability-grid" id="scanGoalsMatrix">
+                  <div class="goal-tag-pill goal-tag-good"><span>💪 Muscle Building</span><span>Good</span></div>
+                  <div class="goal-tag-pill goal-tag-moderate"><span>⚖️ Weight Loss</span><span>Moderate</span></div>
+                  <div class="goal-tag-pill goal-tag-moderate"><span>🩺 Diabetes Care</span><span>Moderate</span></div>
+                  <div class="goal-tag-pill goal-tag-moderate"><span>🌸 PCOS-Friendly</span><span>Moderate</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. PERSONALIZED AI RECOMMENDATIONS -->
+            <div class="ai-personalized-rec-card" id="scanPersonalizedRecCard">
+              <div class="ai-rec-header">
+                <span class="ai-rec-tag">🤖 AI Coach Clinical Verdict</span>
+                <span class="badge badge-green" id="scanRecVerdict">Recommended Choice</span>
+              </div>
+              <div class="ai-rec-body" id="scanRecBody">
+                Balanced meal with good protein distribution. Fits well into your daily caloric budget.
+              </div>
+              <div class="ai-rec-swaps" id="scanRecSwaps">
+                💡 <strong>Healthier Alternative:</strong> Add a fresh salad or raita on the side.
+              </div>
+            </div>
+
+            <!-- 8. USER CORRECTION DRAWER -->
+            <div class="user-correction-panel">
+              <div class="correction-header-toggle" id="toggleCorrectionPanel">
+                <span class="correction-title">
+                  ✏️ <span>User Correction: Edit Food or Portion</span>
+                </span>
+                <span class="correction-action-text" id="correctionToggleArrow">▼ Change Item</span>
+              </div>
+              <div id="correctionInputsContainer" style="display: none; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <div class="input-group" style="margin-bottom: 8px;">
+                  <label class="input-label" style="font-size: 10px;">Correct Food Item</label>
+                  <input type="text" id="inputCorrectionFoodName" class="input-control"
+                    placeholder="e.g. Porotta, Chicken Biryani, Dosa..." list="catalogFoodSuggestions" />
+                  <datalist id="catalogFoodSuggestions"></datalist>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                  <div class="input-group">
+                    <label class="input-label" style="font-size: 10px;">Custom Portion / Pieces</label>
+                    <input type="text" id="inputCorrectionPortionLabel" class="input-control"
+                      placeholder="e.g. 2 pieces / 160g" />
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label" style="font-size: 10px;">Weight in Grams (g)</label>
+                    <input type="number" id="inputCorrectionGrams" class="input-control" placeholder="160" min="10"
+                      max="3000" />
+                  </div>
+                </div>
+                <button type="button" class="btn-primary" id="btnApplyCorrection"
+                  style="width: 100%; padding: 8px 12px; font-size: 12px;">
+                  <span>🔄 Recalculate Nutrition Automatically</span>
+                </button>
+              </div>
+            </div>
+
+            <p style="font-size: 10px; color: var(--text-muted); font-style: italic; text-align: center; margin: 10px 0 6px;">
+              *ESTIMATED NUTRITION: AI visual recognition cross-verified with metabolic food databases.
+            </p>
+
+            <!-- 9. MEAL SLOT SELECTOR & LOG CTA -->
+            <div class="scan-log-cta-bar">
+              <select id="selectScannedMealSlot" class="input-control scan-slot-select">
+                <option value="Breakfast">Breakfast</option>
+                <option value="Lunch" selected>Lunch</option>
+                <option value="Dinner">Dinner</option>
+                <option value="Snacks">Snacks</option>
+              </select>
+              <button type="button" class="btn-primary btn-scan-log-submit" id="btnAddScannedToLog">
+                <span>➕ Add to Today's Meal Log</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 6: AI NUTRITION & CLINICAL COACH (Emotionally Connected)
+           =================================================================== -->
+      <section class="app-screen" id="screen-coach">
+        <header class="screen-header">
+          <button class="btn-icon" id="btnBackFromCoach" title="Back to Home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <h3 class="screen-header-title">AI Nutrition Coach</h3>
+          <button type="button" class="btn-icon" id="btnClearCoachChat" title="Clear Conversation"
+            style="font-size: 13px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="coach-screen-wrapper">
+          <!-- Coach Profile & Live Context Status Banner -->
+          <div class="coach-header-card">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="coach-avatar-wrapper">
+                <div class="coach-avatar-circle">🥗</div>
+                <div class="coach-online-dot" title="Coach Online"></div>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span style="font-size: 14px; font-weight: 800; color: var(--text-main);">NutriAI Coach</span>
+                  <span class="badge badge-green" style="font-size: 9px; padding: 2px 6px;">Active Coach</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;" id="coachContextStatusPill">
+                  Calibrated for your health targets & logged meals
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Doubt & Advice Chips -->
+          <div class="coach-quick-prompts-row" id="coachPromptSuggestions">
+            <button type="button" class="coach-prompt-chip" data-prompt="What should I eat for dinner tonight?">
+              <span>🥗 Dinner suggestion?</span>
+            </button>
+            <button type="button" class="coach-prompt-chip"
+              data-prompt="How many calories in 2 rotis and a bowl of dal?">
+              <span>🔥 2 Rotis + Dal cals?</span>
+            </button>
+            <button type="button" class="coach-prompt-chip"
+              data-prompt="What are healthy high-protein snacks for evening?">
+              <span>🥑 High-protein snacks?</span>
+            </button>
+            <button type="button" class="coach-prompt-chip"
+              data-prompt="Can I eat fruits if I want to keep blood sugar stable?">
+              <span>🍎 Fruits & blood sugar?</span>
+            </button>
+            <button type="button" class="coach-prompt-chip"
+              data-prompt="How much water should I drink today based on my profile?">
+              <span>💧 My water goal?</span>
+            </button>
+          </div>
+
+          <!-- Chat Conversation Stream -->
+          <div class="coach-chat-stream" id="coachChatStream">
+            <!-- Rendered dynamically by app.js -->
+          </div>
+
+          <!-- Chat Input Bar -->
+          <form class="coach-input-bar" id="coachChatForm">
+            <input type="text" id="coachChatInput" class="coach-input-field"
+              placeholder="Ask about foods, calories, recipes, or health..." autocomplete="off" required>
+            <button type="submit" class="coach-send-btn" id="btnCoachSend" title="Send Question">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 7: ANALYTICS & CLINICAL HUB
+           =================================================================== -->
+      <section class="app-screen" id="screen-analytics">
+        <header class="screen-header">
+          <button class="btn-icon" id="btnBackFromAnalytics" title="Back to Home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <h3 class="screen-header-title">Metabolic Analytics & Reports</h3>
+          <button class="btn-icon" id="btnExportDoctorReport" title="Export Clinical Report">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </button>
+        </header>
+
+        <div class="analytics-scroll-content">
+          <!-- 7-Day Calorie Trend Chart -->
+          <div class="analytics-chart-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 style="font-size: 13px; font-weight: 800;">7-Day Calorie Intake vs Target</h4>
+              <span class="badge badge-green" id="analyticsAvgCals">Avg: -- kcal</span>
+            </div>
+            <div class="weekly-bar-chart" id="weeklyCalorieBarChart">
+              <!-- Rendered by app.js -->
+            </div>
+          </div>
+
+          <!-- Macronutrient Distribution Ratio -->
+          <div class="analytics-chart-card">
+            <h4 style="font-size: 13px; font-weight: 800; margin-bottom: 8px;">Macronutrient Distribution</h4>
+            <div style="display: flex; height: 14px; border-radius: 999px; overflow: hidden; margin-bottom: 10px;">
+              <div style="background: #FF9800; width: 30%;" id="distBarProtein" title="Protein"></div>
+              <div style="background: #4CAF50; width: 40%;" id="distBarCarbs" title="Carbs"></div>
+              <div style="background: #AB47BC; width: 30%;" id="distBarFat" title="Fat"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700;">
+              <span style="color: #FF9800;">● Protein: <span id="distValProtein">30%</span></span>
+              <span style="color: #4CAF50;">● Carbs: <span id="distValCarbs">40%</span></span>
+              <span style="color: #AB47BC;">● Fat: <span id="distValFat">30%</span></span>
+            </div>
+          </div>
+
+          <!-- Weight & Metabolic Adherence -->
+          <div class="glass-card" style="margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Current Weight</span>
+                <div style="font-size: 20px; font-weight: 900; color: var(--text-main); margin-top: 2px;">
+                  <span id="analyticsCurrentWeight">64.0</span> kg
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Metabolic Score</span>
+                <div style="font-size: 20px; font-weight: 900; color: var(--primary);" id="analyticsMetabolicScore">94 /
+                  100</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vitals Cards -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+            <div class="vital-metric-card" id="cardLogGlucose">
+              <div class="vital-header">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Blood Glucose</span>
+                <div class="vital-icon-circle" style="background: rgba(239, 83, 80, 0.15); color: #EF5350;">🩸</div>
+              </div>
+              <div class="vital-val-display" id="displayGlucoseVal">-- <span class="vital-unit">mg/dL</span></div>
+              <span class="vital-status-tag" id="displayGlucoseStatus" style="margin-top: 4px;">No records</span>
+            </div>
+
+            <div class="vital-metric-card" id="cardLogBP">
+              <div class="vital-header">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Blood Pressure</span>
+                <div class="vital-icon-circle" style="background: rgba(2, 136, 209, 0.15); color: #0288D1;">🩺</div>
+              </div>
+              <div class="vital-val-display" id="displayBPVal">--/-- <span class="vital-unit">mmHg</span></div>
+              <span class="vital-status-tag" id="displayBPStatus" style="margin-top: 4px;">No records</span>
+            </div>
+          </div>
+
+          <!-- PCOD / PCOS Cycle & Hormonal Phase Nutrition -->
+          <div class="pcod-protocol-card" id="pcodProtocolWidget" style="margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 16px;">🌸</span>
+                <span style="font-size: 13px; font-weight: 800; color: #8E24AA;">PCOD / PCOS Cycle Phase</span>
+              </div>
+              <span class="badge" style="background: #F3E5F5; color: #8E24AA;" id="cycleDayBadge">Day 14
+                (Ovulation)</span>
+            </div>
+
+            <div class="pcod-phase-pill-row" id="pcodPhaseSelector" style="margin-top: 8px;">
+              <button type="button" class="pcod-phase-btn" data-phase="menstrual">🩸 Menstrual</button>
+              <button type="button" class="pcod-phase-btn" data-phase="follicular">🌱 Follicular</button>
+              <button type="button" class="pcod-phase-btn active" data-phase="ovulatory">✨ Ovulatory</button>
+              <button type="button" class="pcod-phase-btn" data-phase="luteal">🌙 Luteal</button>
+            </div>
+
+            <div
+              style="background: var(--bg-card-solid); padding: 10px; border-radius: var(--radius-sm); margin-top: 6px;">
+              <div style="font-size: 11px; font-weight: 800; color: var(--text-main);" id="pcodPhaseTitle">Ovulatory
+                Phase Nutrition</div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4;"
+                id="pcodPhaseAdvice">
+                Estrogen peaks. Support liver detoxification with cruciferous greens (cooked), glutathione, and
+                inositol-rich foods.
+              </p>
+            </div>
+          </div>
+
+          <!-- Medication & Daily Care Checklist -->
+          <div class="glass-card" style="margin-bottom: 14px;" id="medChecklistContainer">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 16px;">💊</span>
+                <span style="font-size: 13px; font-weight: 800; color: var(--text-main);">Daily Care &
+                  Supplements</span>
+              </div>
+              <span class="badge badge-green" id="medCompletedCount">0/3 Done</span>
+            </div>
+
+            <div class="med-checklist" style="margin-top: 10px;">
+              <label class="med-item-row">
+                <div class="med-item-left">
+                  <input type="checkbox" class="med-checkbox" data-med="thyroid">
+                  <span>Thyroid Supplement (Fasting)</span>
+                </div>
+                <span style="font-size: 10px; color: var(--text-muted);">Morning</span>
+              </label>
+              <label class="med-item-row">
+                <div class="med-item-left">
+                  <input type="checkbox" class="med-checkbox" data-med="metformin">
+                  <span>Metformin / Inositol (Post-Meal)</span>
+                </div>
+                <span style="font-size: 10px; color: var(--text-muted);">Afternoon</span>
+              </label>
+              <label class="med-item-row">
+                <div class="med-item-left">
+                  <input type="checkbox" class="med-checkbox" data-med="omega">
+                  <span>Omega-3 / Vitamin D3</span>
+                </div>
+                <span style="font-size: 10px; color: var(--text-muted);">Night</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ===================================================================
+         FLOATING BOTTOM NAVIGATION BAR (5 TABS)
+         =================================================================== -->
+    <nav class="bottom-nav-bar" id="bottomNavBar" style="display: none;">
+      <!-- 1. Home / Dashboard -->
+      <button class="nav-item-btn active" data-screen="screen-dashboard" id="navBtnDashboard">
+        <div class="nav-icon-box">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <span class="nav-item-label">Home</span>
+        <span class="nav-active-indicator"></span>
+      </button>
+
+      <!-- 2. AI Diet Plan -->
+      <button class="nav-item-btn" data-screen="screen-diet-plan" id="navBtnDiet">
+        <div class="nav-icon-box">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+        </div>
+        <span class="nav-item-label">AI Diet</span>
+        <span class="nav-active-indicator"></span>
+      </button>
+
+      <!-- 3. AI Scanner (Center Radar) -->
+      <button class="nav-scan-radar-btn" data-screen="screen-scanner" id="navBtnScanner" title="AI Camera Scanner">
+        <div class="radar-inner-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+        </div>
+      </button>
+
+      <!-- 4. AI Coach -->
+      <button class="nav-item-btn" data-screen="screen-coach" id="navBtnCoach">
+        <div class="nav-icon-box">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <span class="nav-item-label">AI Coach</span>
+        <span class="nav-active-indicator"></span>
+      </button>
+
+      <!-- 5. Analytics -->
+      <button class="nav-item-btn" data-screen="screen-analytics" id="navBtnAnalytics">
+        <div class="nav-icon-box">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </div>
+        <span class="nav-item-label">Analytics</span>
+        <span class="nav-active-indicator"></span>
+      </button>
+    </nav>
+
+    <!-- Modal 1: Quick Manual Food Add Modal -->
+    <div class="modal-backdrop" id="manualAddModal">
+      <div class="modal-sheet">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 800;">Log Food Item</h3>
+          <button class="btn-icon" id="btnCloseManualModal" style="width: 32px; height: 32px;">✕</button>
+        </div>
+
+        <form id="manualAddForm">
+          <div class="input-group">
+            <label class="input-label">Meal Slot</label>
+            <select id="modalMealSlot" class="input-control">
+              <option value="Breakfast">Breakfast</option>
+              <option value="Lunch">Lunch</option>
+              <option value="Dinner">Dinner</option>
+              <option value="Snacks">Snacks</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Food Item Name</label>
+            <input type="text" id="modalFoodName" class="input-control" placeholder="e.g., Grilled Chicken, Moong Dal"
+              required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+              <label class="input-label">Calories (kcal)</label>
+              <input type="number" id="modalCalories" class="input-control" placeholder="250" required>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Protein (g)</label>
+              <input type="number" id="modalProtein" class="input-control" placeholder="18" step="0.1">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+            <div class="input-group">
+              <label class="input-label">Carbs (g)</label>
+              <input type="number" id="modalCarbs" class="input-control" placeholder="25" step="0.1">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Fat (g)</label>
+              <input type="number" id="modalFat" class="input-control" placeholder="6" step="0.1">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Fiber (g)</label>
+              <input type="number" id="modalFiber" class="input-control" placeholder="5" step="0.1">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 12px;">
+            <span>Save to Meal Log</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal 2: Vitals Logger Modal -->
+    <div class="modal-backdrop" id="vitalsLogModal">
+      <div class="modal-sheet">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 800;">Log Vitals & Biomarkers</h3>
+          <button class="btn-icon" id="btnCloseVitalsModal" style="width: 32px; height: 32px;">✕</button>
+        </div>
+
+        <form id="vitalsLogForm">
+          <div class="input-group">
+            <label class="input-label">Blood Glucose (mg/dL)</label>
+            <input type="number" id="modalGlucoseVal" class="input-control" placeholder="e.g. 108">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+              <label class="input-label">BP Systolic</label>
+              <input type="number" id="modalBPSystolic" class="input-control" placeholder="120">
+            </div>
+            <div class="input-group">
+              <label class="input-label">BP Diastolic</label>
+              <input type="number" id="modalBPDiastolic" class="input-control" placeholder="80">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 12px;">
+            <span>Save Vitals</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal 3: Doctor's Clinical Report Modal -->
+    <div class="modal-backdrop" id="clinicalReportModal">
+      <div class="modal-sheet report-sheet-view">
+        <div class="report-clinic-header">
+          <div>
+            <h3 style="font-size: 17px; font-weight: 900; color: var(--primary);">NutriAI Clinical Report</h3>
+            <p style="font-size: 11px; color: var(--text-muted);" id="reportDateStamp">Generated Today</p>
+          </div>
+          <button class="btn-icon" id="btnCloseReportModal">✕</button>
+        </div>
+
+        <div class="report-section-box">
+          <div class="report-stat-row"><span>Patient Name:</span><strong id="reportPatientName">User</strong></div>
+          <div class="report-stat-row"><span>Age / Gender:</span><strong id="reportAgeGender">--</strong></div>
+          <div class="report-stat-row"><span>Conditions:</span><strong id="reportConditions">General Health</strong>
+          </div>
+          <div class="report-stat-row"><span>Daily Target:</span><strong id="reportTargetCals">-- kcal</strong></div>
+        </div>
+
+        <button type="button" class="btn-primary" id="btnDismissReport" style="margin-top: 12px;">
+          <span>Close Report</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal 4: Action Confirmation Modal -->
+    <div class="modal-backdrop" id="confirmationModal">
+      <div class="modal-sheet" style="text-align: center; padding: 24px 20px 28px;">
+        <div
+          style="width: 56px; height: 56px; border-radius: 50%; background: rgba(239, 83, 80, 0.15); color: #EF5350; font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+          ⚠️
+        </div>
+        <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 800; margin-bottom: 6px;"
+          id="confirmModalTitle">Log Out & Clear Details?</h3>
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;"
+          id="confirmModalMessage">
+          This will delete all your user details, food logs, hydration tracking, and clinical vitals history from this
+          device.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <button type="button" class="btn-secondary" id="btnCancelConfirmAction">
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="btn-primary" id="btnExecuteConfirmAction"
+            style="background: linear-gradient(135deg, #EF5350, #C62828); border: none; color: #FFFFFF; box-shadow: 0 4px 14px rgba(239, 83, 80, 0.4);">
+            <span id="confirmActionBtnText">Yes, Log Out</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 4: AI Vision Engine & Multimodal API Settings Modal -->
+    <div class="modal-backdrop" id="visionApiModal">
+      <div class="modal-sheet" style="max-width: 440px; margin: auto; border-radius: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3
+            style="font-family: var(--font-display); font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            <span>✨</span> <span>AI Multimodal Vision Engine</span>
+          </h3>
+          <button class="btn-icon" id="btnCloseVisionModal" style="width: 32px; height: 32px;">✕</button>
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;">
+          NutriAI uses high-precision Multimodal Computer Vision (Google Gemini 1.5 Flash Vision / ChatGPT-grade AI) to
+          visually inspect food photos, verify portion sizes, estimate cooking methods, and compute clinical macros.
+        </p>
+
+        <div class="input-group" style="margin-bottom: 12px;">
+          <label class="input-label" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Google Gemini API Key</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
+              style="color: var(--primary); text-decoration: none; font-size: 11px; font-weight: 700;">Get Free Key
+              ↗</a>
+          </label>
+          <input type="password" id="inputGeminiApiKey" class="input-control"
+            placeholder="AIzaSy... (optional for live cloud vision)" />
+          <span style="font-size: 10px; color: var(--text-muted); margin-top: 4px; display: block;">
+            🟢 Built-in local AI vision runs automatically if no key is entered.
+          </span>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 14px;">
+          <button type="button" class="btn-primary" id="btnSaveVisionApiKey" style="flex: 1;">
+            <span>Save Settings</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Auth Modal Removed -->
+
+    <!-- Toast Notification -->
+    <div class="nutri-toast" id="nutriToast">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2.5">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span id="nutriToastText">Action completed successfully!</span>
+    </div>
+
+  </div>
+
+  <script src="sample-foods.js?v=50"></script>
+  <script src="app.js?v=50"></script>
+</body>
+
+</html>
